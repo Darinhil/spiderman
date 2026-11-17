@@ -1,0 +1,1108 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Favorite Character | Spider-Man (Peter Parker)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      html {
+        scroll-behavior: smooth;
+        background-color: #080b12;
+      }
+      body {
+        font-family: "Inter", system-ui, -apple-system, sans-serif;
+        overflow-x: hidden;
+      }
+      .font-display {
+        font-family: "Bebas Neue", "Space Grotesk", sans-serif;
+        letter-spacing: 0.04em;
+      }
+      .font-heading {
+        font-family: "Space Grotesk", sans-serif;
+      }
+      .bg-web-pattern {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='0.035' stroke-width='1'%3E%3Ccircle cx='60' cy='60' r='16'/%3E%3Ccircle cx='60' cy='60' r='34'/%3E%3Ccircle cx='60' cy='60' r='54'/%3E%3Cpath d='M60 0v120M0 60h120M17.5 17.5l85 85M102.5 17.5l-85 85'/%3E%3C/g%3E%3C/svg%3E");
+      }
+      .bg-halftone {
+        background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+        background-size: 12px 12px;
+      }
+      @keyframes floatSlow {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-10px) rotate(1deg); }
+      }
+      @keyframes spideySense {
+        0% { box-shadow: 0 0 0 0 rgba(230, 36, 41, 0.45); }
+        70% { box-shadow: 0 0 0 18px rgba(230, 36, 41, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(230, 36, 41, 0); }
+      }
+      @keyframes heroFadeUp {
+        from { opacity: 0; transform: translateY(28px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .animate-float-slow { animation: floatSlow 6s ease-in-out infinite; }
+      .animate-spidey-sense { animation: spideySense 2.4s infinite; }
+      .animate-hero-1 { animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      .animate-hero-2 { opacity: 0; animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.18s forwards; }
+      .animate-hero-3 { opacity: 0; animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.36s forwards; }
+      ::-webkit-scrollbar { width: 9px; }
+      ::-webkit-scrollbar-track { background: #080b12; }
+      ::-webkit-scrollbar-thumb { background: #172a4a; border-radius: 9999px; border: 2px solid #080b12; }
+      ::-webkit-scrollbar-thumb:hover { background: #e62429; }
+    </style>
+  </head>
+  <body class="bg-[#080B12] text-white antialiased selection:bg-[#E62429] selection:text-white">
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { useState, useEffect, useRef } = React;
+
+      const NAV_LINKS = [
+        { label: "Home", href: "#home" },
+        { label: "About Spider-Man", href: "#about" },
+        { label: "Powers & Abilities", href: "#powers" },
+        { label: "Movies", href: "#movies" },
+        { label: "Gallery", href: "#gallery" },
+        { label: "Quotes", href: "#quotes" },
+      ];
+
+      const HERO_FACTS = [
+        { label: "Full Name", value: "Peter Benjamin Parker" },
+        { label: "Superhero Name", value: "Spider-Man" },
+        { label: "First Appearance", value: "Amazing Fantasy #15 (1962)" },
+        { label: "Created By", value: "Stan Lee & Steve Ditko" },
+        { label: "Home", value: "Queens, New York City" },
+        { label: "Occupation", value: "Photographer & Scientist" },
+      ];
+
+      const POWERS = [
+        {
+          id: "strength",
+          title: "Superhuman Strength",
+          metric: "10+ Tons Class",
+          description: "Capable of lifting cars, holding crumbling ferry halves together, and overpowering armored foes with deceptive ease.",
+          accent: "from-[#E62429]/25 to-transparent",
+        },
+        {
+          id: "sense",
+          title: "Spider-Sense",
+          metric: "Precognitive Reflex",
+          description: "A tingling sixth sense rooted in his cerebellum that alerts him to hidden threats, ambushes, and incoming projectiles before impact.",
+          accent: "from-sky-500/25 to-transparent",
+        },
+        {
+          id: "crawling",
+          title: "Wall Crawling",
+          metric: "Electrostatic Grip",
+          description: "Manipulates inter-atomic attraction on surfaces, enabling him to scale glass skyscrapers and cling effortlessly to ceilings.",
+          accent: "from-[#E62429]/25 to-transparent",
+        },
+        {
+          id: "agility",
+          title: "Superhuman Agility",
+          metric: "40x Human Reflex",
+          description: "Extraordinary equilibrium, flexibility, and mid-air acrobatics allow him to weave through gunfire and skyline gaps at high velocity.",
+          accent: "from-sky-500/25 to-transparent",
+        },
+        {
+          id: "webbing",
+          title: "Web-Shooting",
+          metric: "Tensile Bio-Polymer",
+          description: "Using custom wrist-mounted web-shooters engineered in his bedroom, he fires high-tensile synthetic silk for swinging, shields, and traps.",
+          accent: "from-[#E62429]/25 to-transparent",
+        },
+        {
+          id: "healing",
+          title: "Healing Ability",
+          metric: "Accelerated Recovery",
+          description: "An enhanced metabolism rapidly repairs bruises, fractures, and exhaustion, letting him stand back up after brutal battles.",
+          accent: "from-sky-500/25 to-transparent",
+        },
+      ];
+
+      const MOVIES = [
+        {
+          id: "sm-2002",
+          title: "Spider-Man",
+          year: 2002,
+          era: "Raimi Trilogy",
+          director: "Sam Raimi",
+          lead: "Tobey Maguire",
+          villain: "Green Goblin",
+          palette: ["#E62429", "#1B3B6F", "#1F4E29"],
+          shortDesc: "Bitten by a genetically engineered spider, shy student Peter Parker becomes New York's protector against the Green Goblin.",
+          synopsis: "Sam Raimi's landmark blockbuster defined modern superhero cinema. After losing Uncle Ben, Peter learns that courage means sacrificing personal happiness to protect the city he loves.",
+        },
+        {
+          id: "sm-2004",
+          title: "Spider-Man 2",
+          year: 2004,
+          era: "Raimi Trilogy",
+          director: "Sam Raimi",
+          lead: "Tobey Maguire",
+          villain: "Doctor Octopus",
+          palette: ["#E62429", "#0D2548", "#D97706"],
+          shortDesc: "Torn between his double life and failing powers, Peter faces brilliant scientist Otto Octavius and his four mechanical tentacles.",
+          synopsis: "Widely celebrated as one of the greatest comic-book films ever made, Spider-Man 2 explores the emotional weight of heroism—highlighted by the iconic runaway elevated train rescue.",
+        },
+        {
+          id: "sm-2007",
+          title: "Spider-Man 3",
+          year: 2007,
+          era: "Raimi Trilogy",
+          director: "Sam Raimi",
+          lead: "Tobey Maguire",
+          villain: "Venom, Sandman & New Goblin",
+          palette: ["#111827", "#E62429", "#94A3B8"],
+          shortDesc: "An alien black symbiote amplifies Peter's darkest impulses while Sandman, New Goblin, and Venom close in.",
+          synopsis: "Facing enemies on all fronts and pride within himself, Peter must reject the seductive power of the black suit and learn the true meaning of forgiveness.",
+        },
+        {
+          id: "tasm-2012",
+          title: "The Amazing Spider-Man",
+          year: 2012,
+          era: "Amazing Era",
+          director: "Marc Webb",
+          lead: "Andrew Garfield",
+          villain: "The Lizard",
+          palette: ["#DC2626", "#0A2342", "#10B981"],
+          shortDesc: "Uncovering his father's secret Oscorp briefcase leads Peter to Dr. Curt Connors—and a desperate battle against the Lizard.",
+          synopsis: "A grounded, kinetic reboot spotlighting Peter's scientific intellect, heartfelt chemistry with Gwen Stacy, and the dawn of his mechanical web-shooters.",
+        },
+        {
+          id: "tasm-2014",
+          title: "The Amazing Spider-Man 2",
+          year: 2014,
+          era: "Amazing Era",
+          director: "Marc Webb",
+          lead: "Andrew Garfield",
+          villain: "Electro & Green Goblin",
+          palette: ["#2563EB", "#E62429", "#38BDF8"],
+          shortDesc: "Peter's toughest battle arrives when Oscorp secrets unleash Electro across Times Square and threaten everyone he loves.",
+          synopsis: "Packed with dazzling web-swinging choreography and devastating emotional stakes, Peter confronts the ultimate price of keeping his promises.",
+        },
+        {
+          id: "mcu-2017",
+          title: "Spider-Man: Homecoming",
+          year: 2017,
+          era: "MCU",
+          director: "Jon Watts",
+          lead: "Tom Holland",
+          villain: "The Vulture",
+          palette: ["#E62429", "#1D4ED8", "#FACC15"],
+          shortDesc: "Eager to prove himself to Tony Stark, 15-year-old Peter balances high school drama with stopping Adrian Toomes's alien-tech ring.",
+          synopsis: "Stripped of his high-tech suit, Peter discovers that being a hero isn't about Stark gadgets—it's about the resolve of the kid beneath the mask.",
+        },
+        {
+          id: "mcu-2019",
+          title: "Spider-Man: Far From Home",
+          year: 2019,
+          era: "MCU",
+          director: "Jon Watts",
+          lead: "Tom Holland",
+          villain: "Mysterio",
+          palette: ["#E62429", "#0F172A", "#22C55E"],
+          shortDesc: "A European school trip turns chaotic when Nick Fury recruits Peter to battle Elemental threats alongside illusionist Quentin Beck.",
+          synopsis: "Stepping out of Iron Man's shadow, Peter must trust his own instincts—his 'Peter Tingle'—to shatter Mysterio's reality-bending drone illusions.",
+        },
+        {
+          id: "mcu-2021",
+          title: "Spider-Man: No Way Home",
+          year: 2021,
+          era: "MCU",
+          director: "Jon Watts",
+          lead: "Tom Holland (with Maguire & Garfield)",
+          villain: "Multiverse Sinister Foes",
+          palette: ["#E62429", "#F59E0B", "#1E3A8A"],
+          shortDesc: "With Peter's identity exposed, a fractured spell pulls iconic villains—and two familiar Spider-Men—across the Multiverse.",
+          synopsis: "A generational cinematic event uniting three eras of Spider-Man in an unforgettable stand at the Statue of Liberty.",
+        },
+        {
+          id: "sv-2018",
+          title: "Spider-Man: Into the Spider-Verse",
+          year: 2018,
+          era: "Spider-Verse",
+          director: "Bob Persichetti, Peter Ramsey & Rodney Rothman",
+          lead: "Shameik Moore & Jake Johnson",
+          villain: "Kingpin & Prowler",
+          palette: ["#E62429", "#EC4899", "#06B6D4"],
+          shortDesc: "Brooklyn teen Miles Morales teams up with a cynical Peter B. Parker and alternate Spider-Heroes to stop Kingpin's collider.",
+          synopsis: "Oscar-winning animated artistry celebrating that anyone can wear the mask—it only takes a leap of faith.",
+        },
+        {
+          id: "sv-2023",
+          title: "Spider-Man: Across the Spider-Verse",
+          year: 2023,
+          era: "Spider-Verse",
+          director: "Joaquim Dos Santos, Kemp Powers & Justin K. Thompson",
+          lead: "Shameik Moore & Hailee Steinfeld",
+          villain: "The Spot & Spider-Society",
+          palette: ["#E62429", "#A855F7", "#22D3EE"],
+          shortDesc: "Catapulted across dimensions, Miles confronts a vast Spider-Society and fights to rewrite the destiny of every Spider-Hero.",
+          synopsis: "An audacious visual masterpiece pushing animation boundaries across six distinct multiverse art styles.",
+        },
+      ];
+
+      const GALLERY_ITEMS = [
+        { id: "gal-1", category: "Swinging Through NY", title: "Midtown Skyline Pendulum", caption: "Carving between glass skyscrapers at dusk high above Fifth Avenue.", variant: "swing" },
+        { id: "gal-2", category: "Action Poses", title: "Rooftop Gargoyle Watch", caption: "Scanning Queens and Manhattan from a rain-slicked perch.", variant: "action" },
+        { id: "gal-3", category: "Different Suits", title: "Symbiote & Iron Armory", caption: "From classic red-and-blue spandex to Stark nano-plating and the black suit.", variant: "suits" },
+        { id: "gal-4", category: "Peter Parker", title: "The Man Behind the Mask", caption: "Daily Bugle freelance photographer by day, selfless protector by night.", variant: "portrait" },
+        { id: "gal-5", category: "Movie Scenes", title: "The Elevated Train Stand", caption: "Every ounce of superhuman strength stretched to save innocent New Yorkers.", variant: "movie" },
+        { id: "gal-6", category: "Villain Showdowns", title: "Brooklyn Bridge Clash", caption: "Dodging pumpkin bombs and mechanical tentacles high above the East River.", variant: "villains" },
+      ];
+
+      const QUOTES = [
+        { id: "q1", quote: "With great power comes great responsibility.", author: "Uncle Ben & Peter Parker", context: "The eternal moral compass guiding every swing across New York." },
+        { id: "q2", quote: "Everybody gets one.", author: "Spider-Man", context: "Classic friendly-neighborhood wit—even in the middle of a rooftop rescue." },
+        { id: "q3", quote: "No matter how many times you get hit, you always get back up.", author: "Peter Parker", context: "The defining truth of Spider-Man's unbreakable spirit across every universe." },
+      ];
+
+      const VILLAINS = [
+        { id: "goblin", name: "Green Goblin", alias: "Norman Osborn", abilities: "Goblin Formula strength, razor bats, pumpkin bombs, armored glider", description: "A brilliant industrialist driven mad by experimental enhancement serum, targeting Peter's heart as fiercely as his body.", color: "#22C55E" },
+        { id: "ock", name: "Doctor Octopus", alias: "Dr. Otto Octavius", abilities: "Genius nuclear intellect, four indestructible neural-linked mechanical arms", description: "A tragic mentor whose fusion experiment fused four titanium arms to his spine, turning ambition into ruthless obsession.", color: "#F59E0B" },
+        { id: "venom", name: "Venom", alias: "Eddie Brock & Klyntar Symbiote", abilities: "Shape-shifting tendrils, organic webbing, Spider-Sense immunity", description: "Born from the alien symbiote Peter rejected, Venom combines lethal brutality with insider knowledge of Spider-Man's secrets.", color: "#E2E8F0" },
+        { id: "sandman", name: "Sandman", alias: "Flint Marko", abilities: "Molecular sand conversion, colossal mass manipulation, density shifting", description: "Transformed in a particle accelerator accident, Marko commands roaring sandstorms yet fights for the daughter he loves.", color: "#D97706" },
+        { id: "electro", name: "Electro", alias: "Max Dillon", abilities: "High-voltage bio-electricity, lightning projection, grid travel", description: "Once an overlooked electrical engineer, Dillon became a living capacitor capable of blacking out all of Manhattan.", color: "#38BDF8" },
+        { id: "lizard", name: "The Lizard", alias: "Dr. Curt Connors", abilities: "Reptilian strength, razor claws, rapid limb regeneration, savage speed", description: "Seeking to regrow his lost arm through cross-species genetics, Connors unleashed a primal apex predator beneath New York.", color: "#10B981" },
+      ];
+
+      function Reveal({ children, className = "", delay = 0 }) {
+        const ref = useRef(null);
+        const [visible, setVisible] = useState(false);
+
+        useEffect(() => {
+          const el = ref.current;
+          if (!el) return;
+          const observer = new IntersectionObserver(
+            ([entry]) => {
+              if (entry.isIntersecting) {
+                setVisible(true);
+                observer.unobserve(el);
+              }
+            },
+            { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+          );
+          observer.observe(el);
+          return () => observer.disconnect();
+        }, []);
+
+        return (
+          <div
+            ref={ref}
+            style={{ transitionDelay: `${delay}ms` }}
+            className={`transition-all duration-700 ease-out ${
+              visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+            } ${className}`}
+          >
+            {children}
+          </div>
+        );
+      }
+
+      function SpiderLogo({ className = "w-7 h-7" }) {
+        return (
+          <svg viewBox="0 0 64 64" fill="currentColor" className={className} aria-hidden="true">
+            <ellipse cx="32" cy="24" rx="5" ry="6.5" />
+            <ellipse cx="32" cy="38" rx="7" ry="10" />
+            <path
+              d="M27 25C18 20 14 11 12 6M37 25C46 20 50 11 52 6M26 29C15 27 9 22 6 17M38 29C49 27 55 22 58 17M26 34C15 36 9 43 7 52M38 34C49 36 55 43 57 52M27 39C20 45 18 52 19 59M37 39C44 45 46 52 45 59"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        );
+      }
+
+      function PowerIcon({ id, className = "w-7 h-7" }) {
+        switch (id) {
+          case "strength":
+            return (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" className={className}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6.5 6.5h2v11h-2zM15.5 6.5h2v11h-2zM3.5 9h3v6h-3zM17.5 9h3v6h-3zM8.5 12h7" />
+              </svg>
+            );
+          case "sense":
+            return (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" className={className}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 12c2.5-4.5 6-6.5 9-6.5s6.5 2 9 6.5c-2.5 4.5-6 6.5-9 6.5S5.5 16.5 3 12z" />
+                <circle cx="12" cy="12" r="2.75" />
+                <path strokeLinecap="round" d="M4.5 4.5l2 2M19.5 4.5l-2 2M12 2v2" />
+              </svg>
+            );
+          case "crawling":
+            return (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" className={className}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v18M5 8l7-5 7 5M5 16l7-5 7 5" />
+              </svg>
+            );
+          case "agility":
+            return (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" className={className}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 2L4 14h7l-1 8 9-12h-7l1-8z" />
+              </svg>
+            );
+          case "webbing":
+            return (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={className}>
+                <circle cx="12" cy="12" r="9" />
+                <circle cx="12" cy="12" r="4.5" />
+                <path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4" />
+              </svg>
+            );
+          default:
+            return (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" className={className}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 21s-7.5-4.8-9.3-9.3C1.4 8.5 3.6 5 7.2 5c2 0 3.7 1 4.8 2.6C13.1 6 14.8 5 16.8 5c3.6 0 5.8 3.5 4.5 6.7C19.5 16.2 12 21 12 21z" />
+                <path strokeLinecap="round" d="M12 10v4M10 12h4" />
+              </svg>
+            );
+        }
+      }
+
+      function WebCornerDecoration({ className = "w-44 h-44" }) {
+        return (
+          <svg viewBox="0 0 200 200" fill="none" className={className} aria-hidden="true">
+            <g stroke="currentColor" strokeWidth="1.2">
+              <path d="M0 0L200 40M0 0L185 95M0 0L145 145M0 0L95 185M0 0L40 200" />
+              <path d="M38 8C34 22 22 34 8 38" />
+              <path d="M78 16C70 46 46 70 16 78" />
+              <path d="M120 24C106 72 72 106 24 120" />
+              <path d="M164 33C144 98 98 144 33 164" />
+            </g>
+          </svg>
+        );
+      }
+
+      function HeroSkylineArtwork({ scrollY = 0 }) {
+        return (
+          <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_25%,rgba(230,36,41,0.28),transparent_48%),radial-gradient(circle_at_22%_35%,rgba(14,74,158,0.42),transparent_55%),linear-gradient(180deg,#040811_0%,#071B35_55%,#080B12_100%)]" />
+            <svg
+              viewBox="0 0 1440 720"
+              preserveAspectRatio="xMidYMax slice"
+              style={{ transform: `translateY(${Math.min(scrollY * 0.14, 70)}px)` }}
+              className="absolute inset-0 w-full h-full opacity-90 transition-transform duration-75"
+              aria-hidden="true"
+            >
+              <defs>
+                <linearGradient id="skyGlow" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#0D274D" stopOpacity="0.6" />
+                  <stop offset="100%" stopColor="#05080F" stopOpacity="1" />
+                </linearGradient>
+                <linearGradient id="webLine" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.7" />
+                  <stop offset="100%" stopColor="#E62429" stopOpacity="0.1" />
+                </linearGradient>
+              </defs>
+              <path
+                d="M0 720V470h58v-90h44v90h38V310h66v160h34V390h52v80h46V260h72v210h36V340h58v130h44V215h64l18-55 18 55h24v255h46V300h68v170h32V365h56v105h48V245h74v225h34V330h64v140h46V280h76v190h44v-75h56v325H0z"
+                fill="url(#skyGlow)"
+              />
+              <path
+                d="M0 720V515h88V360h84v155h54V420h76v95h50V295h92v220h62V395h78v120h70V245h96v270h58V370h88v145h56V325h98v190h68V410h94v105h66V350h96v370H0z"
+                fill="#060A13"
+              />
+              <g fill="#60A5FA" fillOpacity="0.22">
+                <rect x="372" y="325" width="8" height="12" />
+                <rect x="390" y="325" width="8" height="12" />
+                <rect x="372" y="350" width="8" height="12" />
+                <rect x="668" y="275" width="10" height="14" />
+                <rect x="690" y="275" width="10" height="14" />
+                <rect x="712" y="302" width="10" height="14" />
+                <rect x="978" y="352" width="9" height="13" />
+                <rect x="998" y="352" width="9" height="13" />
+                <rect x="1220" y="382" width="10" height="14" />
+              </g>
+              <g fill="#E62429" fillOpacity="0.35">
+                <rect x="390" y="350" width="8" height="12" />
+                <rect x="690" y="302" width="10" height="14" />
+                <rect x="1244" y="382" width="10" height="14" />
+                <circle cx="628" cy="158" r="3" />
+              </g>
+              <path d="M628 160 Q850 280 1045 250" stroke="url(#webLine)" strokeWidth="2.4" fill="none" />
+              <g transform="translate(940, 210)" className="animate-float-slow">
+                <line x1="25" y1="-40" x2="105" y2="-165" stroke="#FFFFFF" strokeOpacity="0.75" strokeWidth="2.5" />
+                <circle cx="48" cy="44" r="68" fill="#E62429" fillOpacity="0.18" />
+                <path
+                  d="M42 22c7-2 14 2 16 9l24-38 7 4-22 44c3 10-2 21-10 28l22 28-8 6-24-25-24 22-7-8 22-24c-6-8-8-18-5-27L21 25l8-6 13 3z"
+                  fill="#0A0F1A"
+                  stroke="#E62429"
+                  strokeWidth="2.2"
+                />
+                <path d="M45 26l6-2-2 5zM53 27l5 1-4 4z" fill="#FFFFFF" />
+              </g>
+            </svg>
+          </div>
+        );
+      }
+
+      function MoviePosterArt({ movie }) {
+        const [c1, c2, c3] = movie.palette;
+        return (
+          <div
+            className="relative w-full aspect-[3/4] overflow-hidden rounded-t-2xl bg-[#071020] flex flex-col justify-between p-5 select-none"
+            style={{
+              backgroundImage: `radial-gradient(circle at 30% 25%, ${c1}55, transparent 60%), radial-gradient(circle at 80% 80%, ${c3}44, transparent 55%), linear-gradient(155deg, ${c2} 0%, #05080F 100%)`,
+            }}
+          >
+            <div className="absolute inset-0 bg-halftone opacity-50" />
+            <div className="relative z-10 flex items-center justify-between text-[11px] font-semibold tracking-widest uppercase text-white/75">
+              <span>{movie.era}</span>
+              <span className="px-2 py-0.5 rounded bg-black/40 border border-white/15">{movie.year}</span>
+            </div>
+            <div className="relative z-10 flex items-center justify-center my-auto">
+              <div
+                className="w-28 h-28 rounded-full flex items-center justify-center border border-white/20 shadow-2xl transition-transform duration-500 group-hover:scale-110"
+                style={{ background: `radial-gradient(circle, ${c1}66 0%, rgba(8,11,18,0.85) 75%)` }}
+              >
+                <SpiderLogo className="w-16 h-16 text-white drop-shadow-[0_0_15px_rgba(230,36,41,0.8)]" />
+              </div>
+            </div>
+            <div className="relative z-10">
+              <div className="h-0.5 w-10 bg-[#E62429] mb-2" />
+              <p className="font-display text-2xl leading-none tracking-wide text-white drop-shadow">{movie.title}</p>
+            </div>
+          </div>
+        );
+      }
+
+      function GallerySceneArt({ item }) {
+        const styles = {
+          swing: "from-[#071B35] via-[#122D58] to-[#E62429]/60",
+          action: "from-[#1A0810] via-[#4A0D16] to-[#071B35]",
+          suits: "from-[#090D16] via-[#1F2937] to-[#E62429]/50",
+          portrait: "from-[#0F172A] via-[#071B35] to-[#1E3A8A]",
+          movie: "from-[#2D0C10] via-[#0B1933] to-[#D97706]/50",
+          villains: "from-[#06241B] via-[#081529] to-[#E62429]/50",
+        };
+        return (
+          <div className={`relative w-full h-full bg-gradient-to-br ${styles[item.variant] || styles.swing} flex items-center justify-center overflow-hidden`}>
+            <div className="absolute inset-0 bg-web-pattern opacity-80" />
+            <div className="absolute -right-10 -bottom-10 w-44 h-44 rounded-full bg-[#E62429]/25 blur-2xl" />
+            <div className="absolute -left-10 -top-10 w-40 h-40 rounded-full bg-sky-400/20 blur-2xl" />
+            <div className="relative z-10 flex flex-col items-center text-center p-6">
+              <div className="w-20 h-20 rounded-2xl bg-black/45 border border-white/15 backdrop-blur-sm flex items-center justify-center mb-3 shadow-xl group-hover:scale-110 transition-transform duration-500">
+                <SpiderLogo className="w-11 h-11 text-[#E62429]" />
+              </div>
+              <span className="text-[11px] uppercase tracking-[0.2em] text-sky-300 font-semibold">{item.category}</span>
+            </div>
+          </div>
+        );
+      }
+
+      function VillainArt({ villain }) {
+        return (
+          <div
+            className="relative h-48 w-full overflow-hidden rounded-t-2xl flex items-center justify-center bg-[#060A13]"
+            style={{ backgroundImage: `radial-gradient(circle at 50% 45%, ${villain.color}38 0%, #071226 62%, #05080F 100%)` }}
+          >
+            <div className="absolute inset-0 bg-halftone opacity-50" />
+            <div
+              className="relative z-10 w-24 h-24 rounded-full border border-white/20 flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-500"
+              style={{ boxShadow: `0 0 36px ${villain.color}44`, backgroundColor: "rgba(8,11,18,0.72)" }}
+            >
+              <span className="font-display text-4xl tracking-wider" style={{ color: villain.color }} aria-hidden="true">
+                {villain.name.split(" ").map((w) => w[0]).join("").slice(0, 2)}
+              </span>
+            </div>
+            <span className="absolute bottom-3 right-3 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider rounded-full bg-black/60 border border-white/10 text-white/80">
+              {villain.alias}
+            </span>
+          </div>
+        );
+      }
+
+      function Navbar() {
+        const [scrolled, setScrolled] = useState(false);
+        const [menuOpen, setMenuOpen] = useState(false);
+
+        useEffect(() => {
+          const onScroll = () => setScrolled(window.scrollY > 36);
+          window.addEventListener("scroll", onScroll, { passive: true });
+          return () => window.removeEventListener("scroll", onScroll);
+        }, []);
+
+        return (
+          <header
+            className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
+              scrolled
+                ? "bg-[#080B12]/90 backdrop-blur-lg border-b border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.6)]"
+                : "bg-gradient-to-b from-[#080B12]/85 to-transparent"
+            }`}
+          >
+            <nav aria-label="Primary Navigation" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+              <a href="#home" className="flex items-center gap-3 group rounded-lg">
+                <span className="w-10 h-10 rounded-xl bg-[#E62429] flex items-center justify-center shadow-[0_0_20px_rgba(230,36,41,0.55)] group-hover:scale-105 transition-transform">
+                  <SpiderLogo className="w-6 h-6 text-white" />
+                </span>
+                <span className="font-display text-xl sm:text-2xl tracking-wider text-white">
+                  MY FAVORITE <span className="text-[#E62429]">CHARACTER</span>
+                </span>
+              </a>
+
+              <div className="hidden lg:flex items-center gap-7">
+                {NAV_LINKS.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    className="text-sm font-medium text-slate-200 hover:text-white relative py-1 transition-colors after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-0.5 after:bg-[#E62429] hover:after:w-full after:transition-all after:duration-300"
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </div>
+
+              <div className="flex items-center gap-3">
+                <a
+                  href="#about"
+                  className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#E62429] hover:bg-[#c81d22] text-white text-sm font-semibold tracking-wide shadow-[0_0_20px_rgba(230,36,41,0.45)] hover:shadow-[0_0_28px_rgba(230,36,41,0.75)] transition-all duration-300"
+                >
+                  Explore Spider-Man
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setMenuOpen((prev) => !prev)}
+                  aria-expanded={menuOpen}
+                  aria-label="Toggle navigation menu"
+                  className="lg:hidden p-2.5 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    {menuOpen ? (
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    ) : (
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                    )}
+                  </svg>
+                </button>
+              </div>
+            </nav>
+
+            {menuOpen && (
+              <div className="lg:hidden bg-[#080B12]/95 backdrop-blur-xl border-b border-white/10 px-6 py-5 space-y-3">
+                {NAV_LINKS.map((link) => (
+                  <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)} className="block py-2 text-base font-medium text-slate-200 hover:text-[#E62429] transition">
+                    {link.label}
+                  </a>
+                ))}
+                <a href="#villains" onClick={() => setMenuOpen(false)} className="block py-2 text-base font-medium text-slate-200 hover:text-[#E62429] transition">
+                  Villains
+                </a>
+                <a href="#about" onClick={() => setMenuOpen(false)} className="mt-3 block text-center px-5 py-3 rounded-full bg-[#E62429] text-white font-semibold">
+                  Explore Spider-Man
+                </a>
+              </div>
+            )}
+          </header>
+        );
+      }
+
+      function Hero() {
+        const [scrollY, setScrollY] = useState(0);
+        useEffect(() => {
+          const handleScroll = () => setScrollY(window.scrollY);
+          window.addEventListener("scroll", handleScroll, { passive: true });
+          return () => window.removeEventListener("scroll", handleScroll);
+        }, []);
+
+        return (
+          <section id="home" className="relative min-h-screen flex items-center justify-center pt-24 pb-16 overflow-hidden">
+            <HeroSkylineArtwork scrollY={scrollY} />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#080B12]/55 via-[#080B12]/40 to-[#080B12] pointer-events-none" />
+            <WebCornerDecoration className="hidden md:block absolute top-16 left-0 w-56 h-56 text-white/10 pointer-events-none" />
+            <WebCornerDecoration className="hidden md:block absolute top-16 right-0 w-56 h-56 text-[#E62429]/20 scale-x-[-1] pointer-events-none" />
+
+            <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+              <div className="animate-hero-1 inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/5 border border-white/15 backdrop-blur-md text-xs sm:text-sm uppercase tracking-[0.2em] text-sky-300 mb-6">
+                <span className="w-2 h-2 rounded-full bg-[#E62429] animate-ping" />
+                Marvel Universe Spotlight • Peter Parker
+              </div>
+
+              <h1 className="animate-hero-1 font-display text-5xl sm:text-7xl md:text-8xl leading-[0.94] tracking-wide text-white drop-shadow-[0_10px_35px_rgba(0,0,0,0.85)]">
+                “WITH GREAT POWER COMES{" "}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E62429] via-[#ff4d52] to-sky-400">
+                  GREAT RESPONSIBILITY.
+                </span>
+                ”
+              </h1>
+
+              <p className="animate-hero-2 mt-6 max-w-2xl mx-auto text-base sm:text-xl text-slate-300 leading-relaxed">
+                Discover the story, powers, and legendary journey of your favorite friendly neighborhood superhero.
+              </p>
+
+              <div className="animate-hero-3 mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#about" className="w-full sm:w-auto px-8 py-4 rounded-full bg-[#E62429] hover:bg-[#c81d22] text-white font-semibold tracking-wide shadow-[0_0_30px_rgba(230,36,41,0.5)] hover:shadow-[0_0_40px_rgba(230,36,41,0.8)] hover:-translate-y-0.5 transition-all duration-300">
+                  Explore His Story
+                </a>
+                <a href="#powers" className="w-full sm:w-auto px-8 py-4 rounded-full bg-[#071B35]/80 hover:bg-[#0c294f] text-white border border-sky-400/35 hover:border-sky-400/70 font-semibold tracking-wide backdrop-blur-md hover:-translate-y-0.5 transition-all duration-300">
+                  Discover His Powers
+                </a>
+              </div>
+
+              <a href="#about" aria-label="Scroll to About Spider-Man" className="mt-16 inline-flex flex-col items-center gap-2 text-xs uppercase tracking-[0.25em] text-slate-400 hover:text-white transition">
+                <span>Swing Down</span>
+                <span className="w-5 h-8 rounded-full border border-white/25 flex items-start justify-center p-1">
+                  <span className="w-1 h-2 rounded-full bg-[#E62429] animate-bounce" />
+                </span>
+              </a>
+            </div>
+          </section>
+        );
+      }
+
+      function AboutSection() {
+        return (
+          <section id="about" className="relative py-24 sm:py-32 bg-web-pattern border-t border-white/5">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <Reveal>
+                <div className="text-center max-w-3xl mx-auto mb-16">
+                  <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#E62429] mb-3">Origin File • Queens, NYC</p>
+                  <h2 className="font-display text-4xl sm:text-6xl tracking-wide text-white">WHO IS SPIDER-MAN?</h2>
+                </div>
+              </Reveal>
+
+              <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+                <Reveal className="lg:col-span-5">
+                  <div className="relative rounded-3xl overflow-hidden border border-white/15 bg-gradient-to-br from-[#071B35] via-[#0A1324] to-[#080B12] p-8 shadow-[0_25px_70px_rgba(0,0,0,0.75)]">
+                    <div className="absolute -top-16 -right-16 w-56 h-56 rounded-full bg-[#E62429]/25 blur-3xl" />
+                    <div className="absolute -bottom-16 -left-16 w-56 h-56 rounded-full bg-sky-500/20 blur-3xl" />
+                    <div className="relative z-10 flex flex-col items-center text-center py-6">
+                      <div className="w-36 h-36 rounded-full bg-gradient-to-tr from-[#E62429] to-[#071B35] p-1 shadow-[0_0_45px_rgba(230,36,41,0.45)] mb-6">
+                        <div className="w-full h-full rounded-full bg-[#080B12] flex items-center justify-center">
+                          <SpiderLogo className="w-20 h-20 text-[#E62429]" />
+                        </div>
+                      </div>
+                      <span className="px-3 py-1 rounded-full bg-[#E62429]/15 border border-[#E62429]/40 text-[#ff6b6f] text-xs font-semibold uppercase tracking-widest mb-3">
+                        S.H.I.E.L.D. Dossier #1962
+                      </span>
+                      <h3 className="font-display text-3xl tracking-wider text-white">PETER BENJAMIN PARKER</h3>
+                      <p className="text-sm text-slate-400 mt-1">“Your Friendly Neighborhood Spider-Man”</p>
+                    </div>
+
+                    <dl className="relative z-10 mt-6 pt-6 border-t border-white/10 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {HERO_FACTS.map((fact) => (
+                        <div key={fact.label} className="rounded-xl bg-white/[0.03] border border-white/5 p-3">
+                          <dt className="text-[11px] uppercase tracking-wider text-sky-300 font-semibold">{fact.label}</dt>
+                          <dd className="text-sm text-white font-medium mt-0.5">{fact.value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </div>
+                </Reveal>
+
+                <Reveal delay={150} className="lg:col-span-7 space-y-6 text-slate-300 text-base sm:text-lg leading-relaxed">
+                  <h3 className="font-heading text-2xl sm:text-3xl font-bold text-white">
+                    From a Quiet Queens Teenager to New York’s Greatest Symbol of Hope
+                  </h3>
+                  <p>
+                    Orphaned at a young age, <strong className="text-white">Peter Parker</strong> was raised in Forest Hills, Queens, by his loving Aunt May and Uncle Ben. A gifted yet bullied Midtown High science student, Peter found comfort in chemistry labs, cameras, and a quiet determination to make his family proud.
+                  </p>
+                  <p>
+                    His life changed forever during a high school science demonstration when a <span className="text-[#ff6b6f] font-medium">radioactive spider</span> bit his hand. Overnight, Peter gained astonishing strength, wall-crawling grip, razor-sharp reflexes, and a sixth sense for danger.
+                  </p>
+                  <p>
+                    Tragedy struck when Peter selfishly allowed a fleeing burglar to escape—only for that same criminal to fatally shoot <strong className="text-white">Uncle Ben</strong> moments later. Shattered by grief, Peter finally understood Ben’s timeless lesson: <em>“With great power there must also come great responsibility.”</em>
+                  </p>
+                  <p>
+                    Since that night, whether snapping photos for the <em>Daily Bugle</em>, struggling to pay rent, or standing beside Earth’s Mightiest Heroes, Peter Parker has never stopped putting New York first—proving that anyone can be extraordinary when they choose to care.
+                  </p>
+                </Reveal>
+              </div>
+            </div>
+          </section>
+        );
+      }
+
+      function PowersSection() {
+        return (
+          <section id="powers" className="relative py-24 sm:py-32 bg-gradient-to-b from-[#080B12] via-[#071B35]/35 to-[#080B12]">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <Reveal>
+                <div className="text-center max-w-3xl mx-auto mb-16">
+                  <p className="text-xs font-bold uppercase tracking-[0.25em] text-sky-400 mb-3">Genetics & Engineering</p>
+                  <h2 className="font-display text-4xl sm:text-6xl tracking-wide text-white">SUPERHUMAN ABILITIES</h2>
+                  <p className="mt-4 text-slate-300 text-base sm:text-lg">
+                    Mutated arachnid biology paired with Peter Parker’s genius-level intellect creates one of the most versatile heroes in the Marvel Universe.
+                  </p>
+                </div>
+              </Reveal>
+
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {POWERS.map((power, index) => (
+                  <Reveal key={power.id} delay={index * 80}>
+                    <article className="group relative h-full rounded-2xl bg-[#0B1220]/90 border border-white/10 hover:border-[#E62429]/60 p-7 overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_18px_45px_rgba(230,36,41,0.18)]">
+                      <div className={`absolute inset-0 bg-gradient-to-br ${power.accent} opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none`} />
+                      <div className="relative z-10 flex items-start justify-between mb-5">
+                        <div className={`w-14 h-14 rounded-2xl bg-[#071B35] border border-white/10 flex items-center justify-center text-[#E62429] group-hover:bg-[#E62429] group-hover:text-white transition-all duration-300 ${power.id === "sense" ? "group-hover:animate-spidey-sense" : ""}`}>
+                          <PowerIcon id={power.id} className="w-7 h-7" />
+                        </div>
+                        <span className="text-[11px] uppercase tracking-wider font-semibold px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sky-300">
+                          {power.metric}
+                        </span>
+                      </div>
+                      <h3 className="relative z-10 font-heading text-xl font-bold text-white mb-2.5">{power.title}</h3>
+                      <p className="relative z-10 text-sm text-slate-300 leading-relaxed">{power.description}</p>
+                    </article>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+          </section>
+        );
+      }
+
+      function MoviesSection() {
+        const ERAS = ["All", "Raimi Trilogy", "Amazing Era", "MCU", "Spider-Verse"];
+        const [selectedEra, setSelectedEra] = useState("All");
+        const [activeMovie, setActiveMovie] = useState(null);
+        const filteredMovies = selectedEra === "All" ? MOVIES : MOVIES.filter((m) => m.era === selectedEra);
+
+        useEffect(() => {
+          const onKeyDown = (e) => { if (e.key === "Escape") setActiveMovie(null); };
+          window.addEventListener("keydown", onKeyDown);
+          return () => window.removeEventListener("keydown", onKeyDown);
+        }, []);
+
+        return (
+          <section id="movies" className="relative py-24 sm:py-32 bg-web-pattern border-t border-white/5">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <Reveal>
+                <div className="text-center max-w-3xl mx-auto mb-10">
+                  <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#E62429] mb-3">Cinematic Multiverse</p>
+                  <h2 className="font-display text-4xl sm:text-6xl tracking-wide text-white">THE SPIDER-MAN MOVIE UNIVERSE</h2>
+                  <p className="mt-4 text-slate-300 text-base sm:text-lg">
+                    Over two decades of big-screen web-slinging—from Tobey Maguire and Andrew Garfield to Tom Holland and the animated Spider-Verse.
+                  </p>
+                </div>
+              </Reveal>
+
+              <div className="flex flex-wrap justify-center gap-2.5 mb-12">
+                {ERAS.map((era) => (
+                  <button
+                    key={era}
+                    type="button"
+                    onClick={() => setSelectedEra(era)}
+                    className={`px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all ${
+                      selectedEra === era
+                        ? "bg-[#E62429] text-white shadow-[0_0_20px_rgba(230,36,41,0.45)]"
+                        : "bg-white/5 text-slate-300 border border-white/10 hover:bg-white/10 hover:text-white"
+                    }`}
+                  >
+                    {era}
+                  </button>
+                ))}
+              </div>
+
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+                {filteredMovies.map((movie, idx) => (
+                  <Reveal key={movie.id} delay={(idx % 5) * 70}>
+                    <article className="group h-full flex flex-col rounded-2xl bg-[#0B1220] border border-white/10 hover:border-[#E62429]/60 overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_18px_40px_rgba(0,0,0,0.65)]">
+                      <MoviePosterArt movie={movie} />
+                      <div className="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                          <div className="flex items-center justify-between gap-2 mb-1.5">
+                            <span className="text-xs font-semibold text-sky-400">{movie.year}</span>
+                            <span className="text-[11px] text-slate-400 truncate">{movie.lead}</span>
+                          </div>
+                          <h3 className="font-heading text-lg font-bold text-white leading-snug mb-2">{movie.title}</h3>
+                          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">{movie.shortDesc}</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setActiveMovie(movie)}
+                          className="mt-5 w-full py-2.5 px-4 rounded-xl bg-white/5 hover:bg-[#E62429] border border-white/10 hover:border-[#E62429] text-xs font-semibold uppercase tracking-wider text-white transition-all duration-300"
+                        >
+                          View Details
+                        </button>
+                      </div>
+                    </article>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+
+            {activeMovie && (
+              <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md" onClick={() => setActiveMovie(null)}>
+                <div className="relative max-w-xl w-full rounded-3xl bg-[#0B1220] border border-white/15 p-6 sm:p-8 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+                  <button type="button" onClick={() => setActiveMovie(null)} aria-label="Close movie details" className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/10 hover:bg-[#E62429] text-white flex items-center justify-center transition">✕</button>
+                  <span className="inline-block px-3 py-1 rounded-full bg-[#E62429]/20 text-[#ff6b6f] text-xs font-semibold uppercase tracking-wider mb-3">
+                    {activeMovie.era} • {activeMovie.year}
+                  </span>
+                  <h3 className="font-display text-4xl tracking-wide text-white">{activeMovie.title}</h3>
+                  <div className="grid grid-cols-2 gap-3 my-5 text-sm">
+                    <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                      <span className="block text-[11px] uppercase text-sky-300">Director</span>
+                      <span className="text-white font-medium">{activeMovie.director}</span>
+                    </div>
+                    <div className="p-3 rounded-xl bg-white/5 border border-white/10">
+                      <span className="block text-[11px] uppercase text-sky-300">Starring</span>
+                      <span className="text-white font-medium">{activeMovie.lead}</span>
+                    </div>
+                    <div className="col-span-2 p-3 rounded-xl bg-white/5 border border-white/10">
+                      <span className="block text-[11px] uppercase text-sky-300">Primary Threat</span>
+                      <span className="text-white font-medium">{activeMovie.villain}</span>
+                    </div>
+                  </div>
+                  <p className="text-slate-300 leading-relaxed text-sm sm:text-base">{activeMovie.synopsis}</p>
+                </div>
+              </div>
+            )}
+          </section>
+        );
+      }
+
+      function GallerySection() {
+        const [selectedIndex, setSelectedIndex] = useState(null);
+
+        useEffect(() => {
+          if (selectedIndex === null) return;
+          const onKeyDown = (e) => {
+            if (e.key === "Escape") setSelectedIndex(null);
+            if (e.key === "ArrowRight") setSelectedIndex((p) => (p + 1) % GALLERY_ITEMS.length);
+            if (e.key === "ArrowLeft") setSelectedIndex((p) => (p - 1 + GALLERY_ITEMS.length) % GALLERY_ITEMS.length);
+          };
+          window.addEventListener("keydown", onKeyDown);
+          return () => window.removeEventListener("keydown", onKeyDown);
+        }, [selectedIndex]);
+
+        const activeItem = selectedIndex !== null ? GALLERY_ITEMS[selectedIndex] : null;
+
+        return (
+          <section id="gallery" className="relative py-24 sm:py-32 bg-gradient-to-b from-[#080B12] via-[#071B35]/30 to-[#080B12]">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <Reveal>
+                <div className="text-center max-w-3xl mx-auto mb-14">
+                  <p className="text-xs font-bold uppercase tracking-[0.25em] text-sky-400 mb-3">Visual Showcase</p>
+                  <h2 className="font-display text-4xl sm:text-6xl tracking-wide text-white">THE SPIDER-MAN GALLERY</h2>
+                  <p className="mt-4 text-slate-300 text-base sm:text-lg">
+                    Iconic suits, soaring Manhattan swings, Peter Parker moments, and dramatic villain clashes. Click any frame to inspect it in full-screen lightbox view.
+                  </p>
+                </div>
+              </Reveal>
+
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {GALLERY_ITEMS.map((item, idx) => (
+                  <Reveal key={item.id} delay={idx * 75}>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedIndex(idx)}
+                      className="group relative w-full aspect-[4/3] rounded-2xl overflow-hidden border border-white/10 hover:border-[#E62429]/70 text-left shadow-lg"
+                    >
+                      <div className="w-full h-full transition-transform duration-500 group-hover:scale-105">
+                        <GallerySceneArt item={item} />
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent p-5 flex flex-col justify-end">
+                        <h3 className="font-heading text-lg font-bold text-white group-hover:text-[#ff6b6f] transition-colors">{item.title}</h3>
+                        <p className="text-xs text-slate-300 mt-1">{item.caption}</p>
+                        <span className="mt-2 inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-sky-300">Open Lightbox →</span>
+                      </div>
+                    </button>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+
+            {activeItem && (
+              <div role="dialog" aria-modal="true" className="fixed inset-0 z-50 bg-black/90 backdrop-blur-lg flex items-center justify-center p-4" onClick={() => setSelectedIndex(null)}>
+                <div className="relative max-w-4xl w-full rounded-3xl overflow-hidden bg-[#0B1220] border border-white/15 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+                  <div className="relative aspect-[16/10] w-full">
+                    <GallerySceneArt item={activeItem} />
+                  </div>
+                  <div className="p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                      <span className="text-xs font-semibold uppercase tracking-widest text-[#E62429]">{activeItem.category}</span>
+                      <h3 className="font-display text-3xl text-white mt-1">{activeItem.title}</h3>
+                      <p className="text-sm text-slate-300 mt-1">{activeItem.caption}</p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button type="button" onClick={() => setSelectedIndex((p) => (p - 1 + GALLERY_ITEMS.length) % GALLERY_ITEMS.length)} className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-sm font-medium transition">← Prev</button>
+                      <button type="button" onClick={() => setSelectedIndex((p) => (p + 1) % GALLERY_ITEMS.length)} className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-sm font-medium transition">Next →</button>
+                      <button type="button" onClick={() => setSelectedIndex(null)} className="px-4 py-2 rounded-xl bg-[#E62429] hover:bg-[#c81d22] text-white text-sm font-semibold transition">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </section>
+        );
+      }
+
+      function QuotesSection() {
+        return (
+          <section id="quotes" className="relative py-24 sm:py-32 bg-web-pattern border-t border-white/5 overflow-hidden">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(230,36,41,0.14),transparent_65%)] pointer-events-none" />
+            <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+              <Reveal>
+                <div className="text-center max-w-3xl mx-auto mb-16">
+                  <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#E62429] mb-3">Philosophy Beneath the Mask</p>
+                  <h2 className="font-display text-4xl sm:text-6xl tracking-wide text-white">WORDS OF A HERO</h2>
+                </div>
+              </Reveal>
+              <div className="grid md:grid-cols-3 gap-6">
+                {QUOTES.map((item, idx) => (
+                  <Reveal key={item.id} delay={idx * 110}>
+                    <blockquote className="group h-full relative rounded-3xl p-8 bg-gradient-to-br from-[#071B35]/85 via-[#0B1220] to-[#1A090F] border border-white/10 hover:border-[#E62429]/60 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1.5 shadow-xl">
+                      <div>
+                        <span className="font-display text-7xl leading-none text-[#E62429]/60 block -mb-4 select-none" aria-hidden="true">“</span>
+                        <p className="font-heading text-xl sm:text-2xl font-bold text-white leading-snug">{item.quote}</p>
+                      </div>
+                      <footer className="mt-8 pt-5 border-t border-white/10">
+                        <cite className="not-italic font-semibold text-sky-300 text-sm block">— {item.author}</cite>
+                        <p className="text-xs text-slate-400 mt-1">{item.context}</p>
+                      </footer>
+                    </blockquote>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+          </section>
+        );
+      }
+
+      function VillainsSection() {
+        return (
+          <section id="villains" className="relative py-24 sm:py-32 bg-gradient-to-b from-[#080B12] via-[#071B35]/35 to-[#080B12]">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <Reveal>
+                <div className="text-center max-w-3xl mx-auto mb-16">
+                  <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#E62429] mb-3">Rogue’s Gallery</p>
+                  <h2 className="font-display text-4xl sm:text-6xl tracking-wide text-white">THE GREATEST ENEMIES</h2>
+                  <p className="mt-4 text-slate-300 text-base sm:text-lg">
+                    Every great hero is forged by formidable foes—brilliant minds, symbiote monsters, and elemental forces pushing Peter Parker to his absolute limits.
+                  </p>
+                </div>
+              </Reveal>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {VILLAINS.map((villain, idx) => (
+                  <Reveal key={villain.id} delay={idx * 80}>
+                    <article className="group h-full rounded-2xl bg-[#0B1220] border border-white/10 hover:border-white/25 overflow-hidden transition-all duration-300 hover:-translate-y-1.5 shadow-xl flex flex-col">
+                      <VillainArt villain={villain} />
+                      <div className="p-6 flex-1 flex flex-col">
+                        <h3 className="font-display text-3xl tracking-wide text-white">{villain.name}</h3>
+                        <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-sky-300">
+                          Abilities: <span className="text-slate-300 normal-case font-normal">{villain.abilities}</span>
+                        </p>
+                        <p className="mt-3 text-sm text-slate-300 leading-relaxed flex-1">{villain.description}</p>
+                      </div>
+                    </article>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+          </section>
+        );
+      }
+
+      function Footer() {
+        return (
+          <footer className="relative overflow-hidden bg-[#05080F] border-t border-white/10 pt-16 pb-10">
+            <WebCornerDecoration className="absolute bottom-0 right-0 w-48 h-48 text-[#E62429]/15 rotate-180 pointer-events-none" />
+            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="grid md:grid-cols-3 gap-10 pb-12 border-b border-white/10">
+                <div>
+                  <a href="#home" className="inline-flex items-center gap-3">
+                    <span className="w-10 h-10 rounded-xl bg-[#E62429] flex items-center justify-center">
+                      <SpiderLogo className="w-6 h-6 text-white" />
+                    </span>
+                    <span className="font-display text-2xl tracking-wider text-white">
+                      MY FAVORITE <span className="text-[#E62429]">CHARACTER</span>
+                    </span>
+                  </a>
+                  <p className="mt-4 text-sm text-slate-400 leading-relaxed max-w-sm">
+                    A cinematic tribute celebrating Spider-Man (Peter Parker)—his origins in Queens, his extraordinary powers, and his unforgettable legacy across comics and cinema.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-heading text-sm font-bold uppercase tracking-widest text-white mb-4">Quick Navigation</h3>
+                  <ul className="grid grid-cols-2 gap-2.5 text-sm">
+                    {NAV_LINKS.map((link) => (
+                      <li key={link.href}>
+                        <a href={link.href} className="text-slate-400 hover:text-[#E62429] transition">{link.label}</a>
+                      </li>
+                    ))}
+                    <li><a href="#villains" className="text-slate-400 hover:text-[#E62429] transition">Villains</a></li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="font-heading text-sm font-bold uppercase tracking-widest text-white mb-4">Connect With Fans</h3>
+                  <div className="flex items-center gap-3">
+                    {[
+                      { name: "X / Twitter", path: "M4 4l16 16M20 4L4 20" },
+                      { name: "Instagram", path: "M7 4h10a3 3 0 013 3v10a3 3 0 01-3 3H7a3 3 0 01-3-3V7a3 3 0 013-3zm5 5a3 3 0 100 6 3 3 0 000-6z" },
+                      { name: "YouTube", path: "M4 8a3 3 0 013-3h10a3 3 0 013 3v8a3 3 0 01-3 3H7a3 3 0 01-3-3V8zm6 2l5 2.5L10 15v-5z" },
+                    ].map((social) => (
+                      <a key={social.name} href="#home" aria-label={social.name} className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 hover:border-[#E62429] hover:bg-[#E62429] text-slate-300 hover:text-white flex items-center justify-center transition">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-5 h-5">
+                          <path strokeLinecap="round" strokeLinejoin="round" d={social.path} />
+                        </svg>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <p className="pt-8 text-center text-xs text-slate-500">© 2026 My Favorite Character. All rights reserved.</p>
+            </div>
+          </footer>
+        );
+      }
+
+      function BackToTop() {
+        const [visible, setVisible] = useState(false);
+        useEffect(() => {
+          const onScroll = () => setVisible(window.scrollY > 500);
+          window.addEventListener("scroll", onScroll, { passive: true });
+          return () => window.removeEventListener("scroll", onScroll);
+        }, []);
+
+        return (
+          <button
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            aria-label="Back to top"
+            className={`fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full bg-[#E62429] hover:bg-[#c81d22] text-white shadow-[0_0_24px_rgba(230,36,41,0.6)] flex items-center justify-center transition-all duration-300 ${
+              visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6 pointer-events-none"
+            }`}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+            </svg>
+          </button>
+        );
+      }
+
+      function App() {
+        return (
+          <div className="min-h-screen bg-[#080B12] text-white">
+            <Navbar />
+            <main>
+              <Hero />
+              <AboutSection />
+              <PowersSection />
+              <MoviesSection />
+              <GallerySection />
+              <QuotesSection />
+              <VillainsSection />
+            </main>
+            <Footer />
+            <BackToTop />
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>
